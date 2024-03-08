@@ -1,6 +1,7 @@
 # React Router
 
 **Table of Contents**:
+
 - [Terms](#terms)
 - [React Router Basics](#react-router-basics)
 - [Using React Router](#using-react-router)
@@ -10,7 +11,7 @@
   - [3) Create `<Link>`s](#3-create-links)
 - [More React Router Topics](#more-react-router-topics)
   - [Fallback Component](#fallback-component)
-  - [Dyanimc Paths](#dyanimc-paths)
+  - [Dynamic Paths](#dynamic-paths)
 - [Route Specificity](#route-specificity)
 - [Nesting Routes](#nesting-routes)
 
@@ -19,7 +20,19 @@
 
 ## Terms
 
+- **React Router** - Enables navigation and routing in single-page applications (SPAs). It allows you to define routes and their corresponding components.
 
+- **React Router DOM** — Provides components like `BrowserRouter`, `Route`, and `Link` to manage routing and navigation.
+
+- **`<BrowserRouter>`** — It ensures that when users visit different URLs in your app, the right components are rendered based on those URLs.
+
+- **`<Route>`** — Like a signpost that tells your app which page to show when you visit a certain web address.
+
+- **`<Link>`** - Special navigation buttons that you can use to move between different pages or views in your web application.
+
+- **Fallback Component** — A component used to render content when no other routes match the current path.
+
+- **Dynamic Path** - refers to a route that can change based on user input or other conditions.
 
 ## React Router Basics
 
@@ -37,7 +50,7 @@ Normally, when we click on a link like...
 
 With React Router, we can do the same kind of navigation, _but we actually never leave the page_. **Instead of opening a separate HTML file, the same HTML file is used, but we just render different components to the screen.**
 
-![](./notes-img/react-router-demo.gif)
+![gif of react router](./notes-img/react-router-demo.gif)
 
 😮 _oooooh so smooth_...
 
@@ -152,7 +165,7 @@ This can easily be accomplished using the `"*"` catch-all route. If none of the 
 </Routes>
 ```
 
-### Dyanimc Paths
+### Dynamic Paths
 
 Suppose I want to render a single `<Product>` when someone visits a page like `/products/5`.
 
