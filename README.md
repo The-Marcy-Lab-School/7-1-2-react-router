@@ -169,7 +169,7 @@ This can easily be accomplished using the `"*"` catch-all route. If none of the 
 
 Suppose I want to render a single `<Product>` when someone visits a page like `/products/5`.
 
-I can define a route to render a single `<Product>` with the dynamic path `/products/:id`. In this dynamic path, the `:id` part is a variable that will match to any string following `/products/`.
+I can define a route to render a single `<Product>` with the dynamic path `/products/:id`. In this dynamic path, the `:id` part is a **path parameter** that will match to any string following `/products/`.
 
 ```jsx
 <Routes>
@@ -199,19 +199,36 @@ const Products = () => {
 }
 ```
 
-Finally, how does the `Product` component know about which `:id` value is currently in the URL?
+Finally, how does the `Product` component know the value of the `id` path parameter?
 
-Using the `useParams` hook from `react-router-dom`! It returns an object containing all of the dynamic portions of the path. In this case, we want the `:id`.
+Using the `useParams` hook from `react-router-dom`! It returns an object containing all of the path parameters. In this case, we want the `id`.
 
 ```jsx
 import { useParams } from "react-router-dom";
 
-const Product = () => {
-  const { id } = useParams();
+const products = [
+  { id: 1, name: 'apple', price: 1 },
+  { id: 2, name: 'banana', price: 0.5 },
+  { id: 3, name: 'cherries', price: 3 },
+]
 
-  return <h1>Product {id}</h1>;
+const Product = () => {
+  const params = useParams();
+  const productId = Number(params.id);
+
+  const product = product.find((product) => product.id === productId);
+
+  return (
+    <>
+      <h1>Product Page</h1>
+      <p>{product.name} — ${product.price}</p>
+    </>
+  )
 };
 ```
+
+* In this example, we use the `id` to find a specific product in the `products` array
+* Path parameters are always going to be strings so we need to convert it to a number if we want to compare it to the `id` values in the `products` array.
 
 ## Route Specificity
 
