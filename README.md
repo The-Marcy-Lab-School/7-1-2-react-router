@@ -32,7 +32,9 @@
 
 - **Fallback Component** — A component used to render content when no other routes match the current path.
 
-- **Dynamic Path** - refers to a route that can change based on user input or other conditions.
+- **Path Parameters** - a dynamic component of a `Route` path, identified using `:pathParam`. For example, `/products/:productName`
+  
+- **`useParams`** - a React hook that returns an object with key:value pairs for each path parameter in the URL.
 
 ## React Router Basics
 
@@ -144,9 +146,7 @@ function App() {
 }
 ```
 
-## More React Router Topics
-
-### Fallback Component
+## Fallback Component
 
 Suppose I had this component that I wanted to render when a URL was entered that didn't match _any_ of the routes I defined:
 
@@ -165,43 +165,62 @@ This can easily be accomplished using the `"*"` catch-all route. If none of the 
 </Routes>
 ```
 
-### Dynamic Paths
+## Creating a Product Page
 
-Suppose I want to render a single `<Product>` when someone visits a page like `/products/5`.
+### I want to render a page to display a single product...
 
-I can define a route to render a single `<Product>` with the dynamic path `/products/:id`. In this dynamic path, the `:id` part is a **path parameter** that will match to any string following `/products/`.
+Suppose I had an array of products that I wanted to show to the user.
 
-```jsx
-<Routes>
-  <Route path="/" element={<Dashboard />} />
-  <Route path="/about" element={<About />} />
-  <Route path="/products" element={<Products />} />
-  <Route path="/products/:id" element={<Product />} />
-  <Route path="*" element={<NotFound />} />
-</Routes>
+```js
+const products = [
+  { id: 1, name: 'apple', price: 1 },
+  { id: 2, name: 'banana', price: 0.5 },
+  { id: 3, name: 'cherries', price: 3 },
+]
 ```
 
-Then, I can provide links to specific products from my `/products` page.
+One solution would be to create a separate `Route` and page component for each of these products:
 
-<!-- prettier-ignore -->
 ```jsx
-const Products = () => {
-  return (
-    <>
-      <h1>Products</h1>
-      <ul>
-        <li><Link to='/products/1'>Product 1</Link></li>
-        <li><Link to='/products/2'>Product 2</Link></li>
-        <li><Link to='/products/3'>Product 3</Link></li>
-      </ul>
-    </>
-  )
+<Route path="/products/apple" element={<Apple />} />
+<Route path="/products/banana" element={<Banana />} />
+<Route path="/products/cherries" element={<Cherries />} />
+```
+
+**Q: What is the issue with this approach?**
+
+### Path Parameters
+
+In React Router, the strategy for achieving this is using **path parameters**.
+
+A **path parameter** is a dynamic portion of a route path, indicated by a colon `:`. In the example below, we use the path parameter `:productName`
+
+```jsx
+<Route path="/products/:productName" element={<Product />} />
+```
+
+`:productName` can be replaced by anything and as a result, the `Product` page component will render.
+
+For example, what is the value of the `productName` path parameter for the following URLs?
+* `/products/5`
+* `/products/hello`
+* `/products/banana`
+
+### `useParams`
+
+Okay so the `Product` page component will render for `/products/apple` and `/products/banana` and `/products/cherries`, but how does it know which product to show?
+
+The `useParams()` hook from `react-router-dom` returns an object with key:value pairs that correspond to the path parameters in the current URL.
+
+```js
+const Product = () => {
+  // if the URL is /products/apple then
+  // params = { productName: 'apple' }
+  const params = useParams();
 }
 ```
 
-Finally, how does the `Product` component know the value of the `id` path parameter?
-
-Using the `useParams` hook from `react-router-dom`! It returns an object containing all of the path parameters. In this case, we want the `id`.
+Below, you can see how we use `params.productName` to find the product from the array of products that the page should show (that data could also come from context or props instead). 
 
 ```jsx
 import { useParams } from "react-router-dom";
@@ -214,9 +233,10 @@ const products = [
 
 const Product = () => {
   const params = useParams();
-  const productId = Number(params.id);
 
-  const product = product.find((product) => product.id === productId);
+  // if the URL is /products/apple then params = { productName: 'apple' }
+
+  const product = product.find((product) => product.name === params.productName);
 
   return (
     <>
@@ -227,8 +247,34 @@ const Product = () => {
 };
 ```
 
-* In this example, we use the `id` to find a specific product in the `products` array
-* Path parameters are always going to be strings so we need to convert it to a number if we want to compare it to the `id` values in the `products` array.
+### Rendering a dynamic list of links
+
+The `Products` page component should show a list of links that let me select which product I want to view.
+
+This is often done by using the same set of data and generating a `Link` for each value in the dataset:.
+
+<!-- prettier-ignore -->
+```jsx
+// ideally, this data would come from props or context so it could be shared by the `Products` and the `Product` page components.
+const products = [
+  { id: 1, name: 'apple', price: 1 },
+  { id: 2, name: 'banana', price: 0.5 },
+  { id: 3, name: 'cherries', price: 3 },
+]
+
+const Products = () => {
+  return (
+    <>
+      <h1>Products</h1>
+      <ul>
+        {
+          products.map((product) => <li><Link to=`/products/${product.name}`>{product.name}</Link></li>)
+        }
+      </ul>
+    </>
+  )
+}
+```
 
 ## Route Specificity
 
