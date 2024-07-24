@@ -35,7 +35,7 @@
 
 - **Fallback Component** — A component used to render content when no other routes match the current path.
 
-- **Path Parameters** - a dynamic component of a `Route` path, identified using `:pathParam`. For example, `/products/:productName`
+- **Path Parameters** - a dynamic component of a `Route` path, identified using `:pathParam`. For example, in the path `/products/:productName`, the path parameter is `:productName` and will match any URL with that pattern including `/products/iPhone`, `/products/foo` or even `/products/5` but NOT `/products/iPhone/details` 
   
 - **`useParams`** - a React hook that returns an object with key:value pairs for each path parameter in the URL.
 
